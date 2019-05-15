@@ -1,0 +1,35 @@
+package com.theone.encrypt.strategy;
+
+import android.content.Context;
+import com.theone.encrypt.encrypt.AesEncrypt;
+
+/**
+ * @Author zhiqiang
+ * @Date 2019-05-14
+ * @Email liuzhiqiang@moretickets.com
+ * @Description
+ */
+public class AesStrategy implements IEncrypt {
+    private Context mContext;
+    private String key;
+
+    public AesStrategy(Context context) {
+        this(context, null);
+    }
+
+    public AesStrategy(Context context, String key) {
+        this.mContext = context.getApplicationContext();
+        this.key = key;
+    }
+
+    @Override
+    public String encrypt(String str) {
+        return AesEncrypt.getInstance(mContext).encrypt(key, str);
+    }
+
+    @Override
+    public String decode(String str) {
+        return AesEncrypt.getInstance(mContext).decrypt(key, str);
+    }
+
+}

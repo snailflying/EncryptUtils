@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="encrypt">
+        <item>AesRsa混合加密</item>
+        <item>Aes加密</item>
+        <item>Des3加密</item>
+    </string-array>
+</resources>

@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+
+    //测试 start
+    testImplementation "junit:junit:$rootProject.ext.junit"
+    testImplementation "androidx.test:rules:$rootProject.ext.testRules"
+    testImplementation "androidx.test.ext:junit:$rootProject.ext.testJunit"
+    testImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.espressoCore"
+    //robolectric 规避限定在 Android 模拟器或真机跑的问题，提供Android代码的运行环境
+    testImplementation "org.robolectric:robolectric:$rootProject.ext.robolectric"
+    //Mockito
+    //模拟对象并且提供了一些验证函数执行的功能
+    testImplementation "org.mockito:mockito-core:$rootProject.ext.mockitoCore"
+    testImplementation "org.mockito:mockito-inline:$rootProject.ext.mockitoCore"
+    testImplementation "org.robolectric:shadows-multidex:$rootProject.ext.robolectricMultidex"
+    androidTestImplementation "com.google.dexmaker:dexmaker:$rootProject.ext.dexmaker"
+    androidTestImplementation "com.linkedin.dexmaker:dexmaker-mockito:$rootProject.ext.dexmakerMockito"
+    //测试 end
+}
