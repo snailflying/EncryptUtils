@@ -13,8 +13,8 @@
 # 使用方法
 #### 暂时只支持源码依赖
 ```java
-Encrypt.with(context).encode(String);
-Encrypt.with(context).decode(String);
+Encrypt.with(Context).encrypt(String);
+Encrypt.with(Context).decrypt(String);
 
 //获取默认 AES+RSA混合加密 策略
 Encrypt.with(Context)
