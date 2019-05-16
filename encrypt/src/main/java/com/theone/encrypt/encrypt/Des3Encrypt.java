@@ -82,13 +82,13 @@ public class Des3Encrypt implements IEncrypt {
         byte[] decryptData = cipher.doFinal(Base64Util.decode(encryptText));
         return new String(decryptData, encoding);
     }
-
+    //keyLenth:密钥长度 需要*8  取值只能为 16 24 32 对应密钥长度为128、192、256
     private byte[] getKey(String key) {
         String serialNo = GenKey.getAndroidId(context);
         //加密随机字符串生成AES key
-        return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 24).getBytes();
+        return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 32).getBytes();
     }
-
+    //keyLenth:IV长度 8
     private byte[] getIV(String key) {
         String serialNo = GenKey.getAndroidId(context);
         //加密随机字符串生成AES key

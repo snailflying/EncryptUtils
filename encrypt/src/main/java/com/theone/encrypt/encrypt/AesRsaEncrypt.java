@@ -161,16 +161,28 @@ public class AesRsaEncrypt implements IEncrypt {
         return new SecretKeySpec(aesKey, EncryptConstants.TYPE_AES);
     }
 
+    //keyLenth:密钥长度 需要*8  取值只能为 16 24 32 对应密钥长度为128、192、256
     private byte[] getKey(String key) {
-        String serialNo = GenKey.getAndroidId(mContext);
-        //加密随机字符串生成AES key
-        return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 16).getBytes();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            byte[] aesKey = new byte[32];
+            SecureRandom secureRandom = new SecureRandom();
+            secureRandom.nextBytes(aesKey);
+
+            //加密随机字符串生成AES key
+            return aesKey;
+
+        } else {
+            String serialNo = GenKey.getAndroidId(mContext);
+            //加密随机字符串生成AES key
+            return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 32).getBytes();
+
+        }
     }
 
     private String getIV() {
         String serialNo = GenKey.getAndroidId(mContext);
         //加密随机字符串生成AES key
-        return GenKey.SHA(serialNo + "#$Zhi$D%FQiang").substring(0, 12);
+        return GenKey.SHA(serialNo + "#$Zhi$D%FQiang").substring(0, 16);
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)

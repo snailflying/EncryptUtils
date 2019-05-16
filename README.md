@@ -37,7 +37,7 @@ Encrypt.with(Des3Strategy(context))
 
 # License
 
-    Copyright 2016 Zhiqiang
+    Copyright 2016 ZhiQiang
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
