@@ -28,7 +28,7 @@ import java.util.GregorianCalendar;
  * @Email liuzhiqiang@moretickets.com
  * @Description
  */
-public class AesRsaEncrypt {
+public class AesRsaEncrypt implements IEncrypt {
     public static final String TAG = "AesRsaUtil";
 
     private Context mContext;
@@ -77,33 +77,41 @@ public class AesRsaEncrypt {
         return instance;
     }
 
+    @Override
+    public Cipher getCipher(String key, int mode) throws Exception {
+        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+        cipher.init(mode, getAESKeySpec(key), getIvParameterSpec());
+        return cipher;
+    }
+
     /**
      * AES 加密
      *
      * @param plainText: 需要被加密数据.
      * @return Base64格式的加密字符串.
      */
-    public String encrypt(String plainText) throws Exception {
-        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(Cipher.ENCRYPT_MODE, getAESKeySpec(), getIvParameterSpec());
+    @Override
+    public String encrypt(String key, String plainText) throws Exception {
+        Cipher cipher = getCipher(key, Cipher.ENCRYPT_MODE);
 
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
 
         //将byte转为Base64编码格式
         return Base64Util.encode(encryptedBytes);
     }
+
     /**
      * AES 解密
      *
      * @param encryptedText: 需要被解密数据.
      * @return 解密后字符串.
      */
-    public String decrypt(String encryptedText) throws Exception {
+    @Override
+    public String decrypt(String key, String encryptedText) throws Exception {
         //将Base64编码格式字符串解码为byte
         byte[] decodedBytes = Base64Util.decode(encryptedText);
 
-        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, getAESKeySpec(), getIvParameterSpec());
+        Cipher cipher = getCipher(key, Cipher.DECRYPT_MODE);
 
         return new String(cipher.doFinal(decodedBytes));
     }
@@ -129,7 +137,7 @@ public class AesRsaEncrypt {
         if (TextUtils.isEmpty(SpUtils.getAESKey(mContext))) {
             // Encrypt AES-Key with RSA Public Key then save to SharedPrefs
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-                String encryptAESKey = encryptRSA(getKey());
+                String encryptAESKey = encryptRSA(getKey(null));
                 SpUtils.setAESKey(mContext, encryptAESKey);
             }
         }
@@ -140,23 +148,23 @@ public class AesRsaEncrypt {
         return new IvParameterSpec(getIV().getBytes());
     }
 
-    private SecretKeySpec getAESKeySpec() throws Exception {
+    private SecretKeySpec getAESKeySpec(String key) throws Exception {
 
         byte[] aesKey;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             String encryptedKey = SpUtils.getAESKey(mContext);
             aesKey = decryptRSA(encryptedKey);
         } else {
-            aesKey = getKey();
+            aesKey = getKey(key);
         }
 
         return new SecretKeySpec(aesKey, EncryptConstants.TYPE_AES);
     }
 
-    private byte[] getKey() {
+    private byte[] getKey(String key) {
         String serialNo = GenKey.getAndroidId(mContext);
         //加密随机字符串生成AES key
-        return GenKey.SHA(serialNo + "#$Zhi$D%F^Qiang").substring(0, 16).getBytes();
+        return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 16).getBytes();
     }
 
     private String getIV() {

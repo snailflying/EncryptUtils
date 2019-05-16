@@ -1,7 +1,6 @@
 package com.theone.encrypt.encrypt;
 
 import android.content.Context;
-import android.text.TextUtils;
 import com.theone.encrypt.util.Base64Util;
 import com.theone.encrypt.util.GenKey;
 
@@ -17,7 +16,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @Date 2019-05-15
  * @Description
  */
-public class Des3Encrypt {
+public class Des3Encrypt implements IEncrypt {
     public static final String DESEDE_CBC_PKCS5_PADDING = "desede/CBC/PKCS5Padding";
     private static String encoding = "utf-8";
     private static Des3Encrypt instance;
@@ -30,6 +29,7 @@ public class Des3Encrypt {
 
     /**
      * 单例模式
+     *
      * @param context context
      * @return 获取AesUtil实例
      */
@@ -43,22 +43,30 @@ public class Des3Encrypt {
         }
         return instance;
     }
-    
+
+
+    @Override
+    public Cipher getCipher(String key, int mode) throws Exception {
+        DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
+        SecretKey deskey = keyFactory.generateSecret(spec);
+
+        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
+        IvParameterSpec ips = new IvParameterSpec(getIV(key));
+        cipher.init(mode, deskey, ips);
+        return cipher;
+    }
+
+
     /**
      * 加密
-     * @param plainText 要加密文字
-     * @param secretKey 密钥
      *
+     * @param plainText 要加密文字
+     * @param key       密钥
      * @return 加密文字
      */
-    public  String encode(String secretKey, String plainText) throws Exception {
-        SecretKey deskey = null;
-        DESedeKeySpec spec = new DESedeKeySpec(getKey(secretKey));
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
-        deskey = keyFactory.generateSecret(spec);
-        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
-        IvParameterSpec ips = new IvParameterSpec(getIV(secretKey));
-        cipher.init(1, deskey, ips);
+    public String encrypt(String key, String plainText) throws Exception {
+        Cipher cipher = getCipher(key, Cipher.ENCRYPT_MODE);
         byte[] encryptData = cipher.doFinal(plainText.getBytes(encoding));
         return Base64Util.encode(encryptData);
     }
@@ -66,22 +74,16 @@ public class Des3Encrypt {
     /***
      * 解密
      * @param encryptText 要解密文字
-     * @param secretKey  密钥
+     * @param key  密钥
      * @return 解密文字
      */
-    public  String decode(String secretKey, String encryptText) throws Exception {
-        SecretKey deskey = null;
-        DESedeKeySpec spec = new DESedeKeySpec(getKey(secretKey));
-        SecretKeyFactory keyfactory = SecretKeyFactory.getInstance("desede");
-        deskey = keyfactory.generateSecret(spec);
-        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
-        IvParameterSpec ips = new IvParameterSpec(getIV(secretKey));
-        cipher.init(2, deskey, ips);
+    public String decrypt(String key, String encryptText) throws Exception {
+        Cipher cipher = getCipher(key, Cipher.DECRYPT_MODE);
         byte[] decryptData = cipher.doFinal(Base64Util.decode(encryptText));
         return new String(decryptData, encoding);
     }
 
-    private  byte[] getKey(String key) {
+    private byte[] getKey(String key) {
         String serialNo = GenKey.getAndroidId(context);
         //加密随机字符串生成AES key
         return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 24).getBytes();

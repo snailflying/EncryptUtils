@@ -8,12 +8,12 @@ import android.widget.AdapterView
 import com.theone.encrypt.Encrypt
 import com.theone.encrypt.strategy.AesStrategy
 import com.theone.encrypt.strategy.Des3Strategy
-import com.theone.encrypt.strategy.IEncrypt
+import com.theone.encrypt.strategy.IEncryptStrategy
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var iEncrypt:IEncrypt
+    lateinit var iEncryptStrategy: IEncryptStrategy
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     private fun testEncrypt() {
         val origin = origin.text.toString()
-        iEncrypt = Encrypt.with(this)
-        val encode = iEncrypt.encrypt(origin)
-        val decode = iEncrypt.decode(encode)
+        iEncryptStrategy = Encrypt.with(this)
+        val encode = iEncryptStrategy.encrypt(origin)
+        val decode = iEncryptStrategy.decrypt(encode)
         encrypt.text = getString(R.string.encode_tip)+encode
         decrypt.text = getString(R.string.decode_tip)+decode
 
@@ -37,13 +37,13 @@ class MainActivity : AppCompatActivity() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 when (position){
-                    0-> iEncrypt = Encrypt.with(this@MainActivity)
-                    1-> iEncrypt = Encrypt.with(AesStrategy(this@MainActivity))
-                    2-> iEncrypt = Encrypt.with(Des3Strategy(this@MainActivity))
+                    0-> iEncryptStrategy = Encrypt.with(this@MainActivity)
+                    1-> iEncryptStrategy = Encrypt.with(AesStrategy(this@MainActivity))
+                    2-> iEncryptStrategy = Encrypt.with(Des3Strategy(this@MainActivity))
                 }
 
-                val encode = iEncrypt.encrypt(origin)
-                val decode = iEncrypt.decode(encode)
+                val encode = iEncryptStrategy.encrypt(origin)
+                val decode = iEncryptStrategy.decrypt(encode)
                 encrypt.text = resources.getStringArray(R.array.encrypt)[position]+"加密:"+encode
                 decrypt.text = resources.getStringArray(R.array.encrypt)[position]+"解密:"+decode
             }

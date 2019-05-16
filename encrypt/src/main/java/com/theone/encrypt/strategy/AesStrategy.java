@@ -3,13 +3,15 @@ package com.theone.encrypt.strategy;
 import android.content.Context;
 import com.theone.encrypt.encrypt.AesEncrypt;
 
+import javax.crypto.Cipher;
+
 /**
  * @Author zhiqiang
  * @Date 2019-05-14
  * @Email liuzhiqiang@moretickets.com
  * @Description
  */
-public class AesStrategy implements IEncrypt {
+public class AesStrategy implements IEncryptStrategy {
     private Context mContext;
     private String key;
 
@@ -23,13 +25,33 @@ public class AesStrategy implements IEncrypt {
     }
 
     @Override
-    public String encrypt(String str) {
-        return AesEncrypt.getInstance(mContext).encrypt(key, str);
+    public Cipher getCipher(int mode) {
+        try {
+            return AesEncrypt.getInstance(mContext).getCipher(key, mode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @Override
-    public String decode(String str) {
-        return AesEncrypt.getInstance(mContext).decrypt(key, str);
+    public String encrypt(String str) {
+        try {
+            return AesEncrypt.getInstance(mContext).encrypt(key, str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String decrypt(String str) {
+        try {
+            return AesEncrypt.getInstance(mContext).decrypt(key, str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

@@ -2,7 +2,7 @@ package com.theone.encrypt;
 
 import android.content.Context;
 import com.theone.encrypt.strategy.AesRsaStrategy;
-import com.theone.encrypt.strategy.IEncrypt;
+import com.theone.encrypt.strategy.IEncryptStrategy;
 
 /**
  * @Author zhiqiang
@@ -12,11 +12,11 @@ import com.theone.encrypt.strategy.IEncrypt;
  */
 public class Encrypt {
 
-    public static IEncrypt with(Context context) {
+    public static IEncryptStrategy with(Context context) {
         return with(new AesRsaStrategy(context));
     }
 
-    public static IEncrypt with(IEncrypt encrypt) {
+    public static IEncryptStrategy with(IEncryptStrategy encrypt) {
         return encrypt;
     }
 }

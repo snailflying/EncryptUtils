@@ -3,24 +3,31 @@ package com.theone.encrypt.strategy;
 import android.content.Context;
 import com.theone.encrypt.encrypt.AesRsaEncrypt;
 
+import javax.crypto.Cipher;
+
 /**
  * @Author zhiqiang
  * @Date 2019-05-14
  * @Email liuzhiqiang@moretickets.com
  * @Description
  */
-public class AesRsaStrategy implements IEncrypt {
+public class AesRsaStrategy implements IEncryptStrategy {
     private Context mContext;
+    private String key;
 
     public AesRsaStrategy(Context context) {
-        this.mContext = context.getApplicationContext();
-
+        this(context, null);
     }
-
+    public AesRsaStrategy(Context context, String key) {
+        this.mContext = context.getApplicationContext();
+        if (key != null) {
+            this.key = key;
+        }
+    }
     @Override
-    public String encrypt(String str) {
+    public Cipher getCipher(int mode) {
         try {
-            return AesRsaEncrypt.getInstance(mContext).encrypt(str);
+            return AesRsaEncrypt.getInstance(mContext).getCipher(key, mode);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -28,9 +35,19 @@ public class AesRsaStrategy implements IEncrypt {
     }
 
     @Override
-    public String decode(String str) {
+    public String encrypt(String str) {
         try {
-            return AesRsaEncrypt.getInstance(mContext).decrypt(str);
+            return AesRsaEncrypt.getInstance(mContext).encrypt(key,str);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public String decrypt(String str) {
+        try {
+            return AesRsaEncrypt.getInstance(mContext).decrypt(key,str);
         } catch (Exception e) {
             e.printStackTrace();
         }
