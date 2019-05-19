@@ -45,17 +45,6 @@ public class Des3Encrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getDecryptCipher(String key) throws Exception {
-        DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
-        SecretKey deskey = keyFactory.generateSecret(spec);
-
-        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
-        IvParameterSpec ips = new IvParameterSpec(getIV(key));
-        cipher.init(Cipher.DECRYPT_MODE, deskey, ips);
-        return cipher;    }
-
-    @Override
     public Cipher getEncryptCipher(String key) throws Exception {
         DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
@@ -64,7 +53,20 @@ public class Des3Encrypt implements IEncrypt {
         Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
         IvParameterSpec ips = new IvParameterSpec(getIV(key));
         cipher.init(Cipher.ENCRYPT_MODE, deskey, ips);
-        return cipher;    }
+        return cipher;
+    }
+
+    @Override
+    public Cipher getDecryptCipher(String key) throws Exception {
+        DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
+        SecretKey deskey = keyFactory.generateSecret(spec);
+
+        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
+        IvParameterSpec ips = new IvParameterSpec(getIV(key));
+        cipher.init(Cipher.DECRYPT_MODE, deskey, ips);
+        return cipher;
+    }
 
     /**
      * 加密
@@ -90,12 +92,14 @@ public class Des3Encrypt implements IEncrypt {
         byte[] decryptData = cipher.doFinal(Base64Util.decode(encryptText));
         return new String(decryptData, encoding);
     }
+
     //keyLenth:密钥长度 需要*8  取值只能为 16 24 32 对应密钥长度为128、192、256
     private byte[] getKey(String key) {
         String serialNo = GenKey.getAndroidId(context);
         //加密随机字符串生成AES key
         return GenKey.SHA(serialNo + key + "#$Zhi$D%F^Qiang").substring(0, 32).getBytes();
     }
+
     //keyLenth:IV长度 8
     private byte[] getIV(String key) {
         String serialNo = GenKey.getAndroidId(context);

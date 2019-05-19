@@ -30,12 +30,9 @@ import java.util.GregorianCalendar;
  */
 public class AesRsaEncrypt implements IEncrypt {
     public static final String TAG = "AesRsaUtil";
-
-    private Context mContext;
-
     private static final String KEYSTORE_ALIAS = "KEYSTORE_DEMO";
-
     private static AesRsaEncrypt instance;
+    private Context mContext;
     private KeyStore keyStore;
 
 
@@ -78,16 +75,18 @@ public class AesRsaEncrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getDecryptCipher(String key) throws Exception {
-        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, getAESKeySpec(key), getIvParameterSpec());
-        return cipher;    }
-
-    @Override
     public Cipher getEncryptCipher(String key) throws Exception {
         Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
         cipher.init(Cipher.ENCRYPT_MODE, getAESKeySpec(key), getIvParameterSpec());
-        return cipher;    }
+        return cipher;
+    }
+
+    @Override
+    public Cipher getDecryptCipher(String key) throws Exception {
+        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+        cipher.init(Cipher.DECRYPT_MODE, getAESKeySpec(key), getIvParameterSpec());
+        return cipher;
+    }
 
     /**
      * AES 加密

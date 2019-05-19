@@ -57,18 +57,18 @@ public class AesEncrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getDecryptCipher(String key) throws Exception {
-        SecretKeySpec keySpec = new SecretKeySpec(getKey(key), EncryptConstants.TYPE_AES);
-        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(getIV(key)));
-        return cipher;
-    }
-
-    @Override
     public Cipher getEncryptCipher(String key) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(getKey(key), EncryptConstants.TYPE_AES);
         Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
         cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(getIV(key)));
+        return cipher;
+    }
+
+    @Override
+    public Cipher getDecryptCipher(String key) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(getKey(key), EncryptConstants.TYPE_AES);
+        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(getIV(key)));
         return cipher;
     }
 

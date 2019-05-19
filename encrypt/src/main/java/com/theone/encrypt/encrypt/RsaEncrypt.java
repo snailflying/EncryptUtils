@@ -20,8 +20,6 @@ import java.security.spec.RSAKeyGenParameterSpec;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static com.theone.encrypt.constant.EncryptConstants.AES_GCM_NO_PADDING;
-
 /**
  * @Author zhiqiang
  * @Date 2019-05-15
@@ -74,28 +72,8 @@ public class RsaEncrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getDecryptCipher(String key) throws Exception {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
-//            cipher.init(Cipher.DECRYPT_MODE, getKeySpec(key), getIvParameterSpec());
-            PrivateKey privateKey = (PrivateKey) keyStore.getKey(KEYSTORE_ALIAS, null);
-
-            Cipher cipher = Cipher.getInstance(EncryptConstants.RSA_ECB_PKCS1PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            return cipher;
-        } else {
-            SecretKeySpec keySpec = getKeySpec(key);
-            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec, getIvParameterSpec());
-            return cipher;
-        }
-    }
-
-    @Override
     public Cipher getEncryptCipher(String key) throws Exception {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
-//            cipher.init(Cipher.ENCRYPT_MODE, getKeySpec(key), getIvParameterSpec());
             PublicKey publicKey = keyStore.getCertificate(KEYSTORE_ALIAS).getPublicKey();
 
             Cipher cipher = Cipher.getInstance(EncryptConstants.RSA_ECB_PKCS1PADDING);
@@ -104,8 +82,24 @@ public class RsaEncrypt implements IEncrypt {
         } else {
             SecretKeySpec keySpec = getKeySpec(key);
 
-            Cipher cipher = Cipher.getInstance(AES_GCM_NO_PADDING);
+            Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
             cipher.init(Cipher.ENCRYPT_MODE, keySpec, getIvParameterSpec());
+            return cipher;
+        }
+    }
+
+    @Override
+    public Cipher getDecryptCipher(String key) throws Exception {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            PrivateKey privateKey = (PrivateKey) keyStore.getKey(KEYSTORE_ALIAS, null);
+
+            Cipher cipher = Cipher.getInstance(EncryptConstants.RSA_ECB_PKCS1PADDING);
+            cipher.init(Cipher.DECRYPT_MODE, privateKey);
+            return cipher;
+        } else {
+            SecretKeySpec keySpec = getKeySpec(key);
+            Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, getIvParameterSpec());
             return cipher;
         }
     }
