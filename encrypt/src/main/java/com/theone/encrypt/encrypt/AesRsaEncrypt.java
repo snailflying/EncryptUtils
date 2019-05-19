@@ -26,7 +26,7 @@ import java.util.GregorianCalendar;
  * @Author zhiqiang
  * @Date 2019-05-15
  * @Email liuzhiqiang@moretickets.com
- * @Description
+ * @Description 加密大数据时使用，因两层加密，加密小数据反而慢
  */
 public class AesRsaEncrypt implements IEncrypt {
     public static final String TAG = "AesRsaUtil";
@@ -78,11 +78,16 @@ public class AesRsaEncrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getCipher(String key, int mode) throws Exception {
+    public Cipher getDecryptCipher(String key) throws Exception {
         Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(mode, getAESKeySpec(key), getIvParameterSpec());
-        return cipher;
-    }
+        cipher.init(Cipher.DECRYPT_MODE, getAESKeySpec(key), getIvParameterSpec());
+        return cipher;    }
+
+    @Override
+    public Cipher getEncryptCipher(String key) throws Exception {
+        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+        cipher.init(Cipher.ENCRYPT_MODE, getAESKeySpec(key), getIvParameterSpec());
+        return cipher;    }
 
     /**
      * AES 加密
@@ -92,7 +97,7 @@ public class AesRsaEncrypt implements IEncrypt {
      */
     @Override
     public String encrypt(String key, String plainText) throws Exception {
-        Cipher cipher = getCipher(key, Cipher.ENCRYPT_MODE);
+        Cipher cipher = getEncryptCipher(key);
 
         byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
 
@@ -111,7 +116,7 @@ public class AesRsaEncrypt implements IEncrypt {
         //将Base64编码格式字符串解码为byte
         byte[] decodedBytes = Base64Util.decode(encryptedText);
 
-        Cipher cipher = getCipher(key, Cipher.DECRYPT_MODE);
+        Cipher cipher = getDecryptCipher(key);
 
         return new String(cipher.doFinal(decodedBytes));
     }

@@ -10,7 +10,8 @@ import javax.crypto.Cipher;
  */
 public interface IEncrypt {
 
-    Cipher getCipher(String key, int mode) throws Exception;
+    Cipher getDecryptCipher(String key) throws Exception;
+    Cipher getEncryptCipher(String key) throws Exception;
 
     String encrypt(String key, String str)throws Exception;
 

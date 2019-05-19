@@ -1,7 +1,6 @@
 package com.theone.encrypt.encrypt;
 
 import android.content.Context;
-import android.util.Log;
 import com.theone.encrypt.constant.EncryptConstants;
 import com.theone.encrypt.util.Base64Util;
 import com.theone.encrypt.util.GenKey;
@@ -58,10 +57,18 @@ public class AesEncrypt implements IEncrypt {
     }
 
     @Override
-    public Cipher getCipher(String key, int mode) throws Exception {
+    public Cipher getDecryptCipher(String key) throws Exception {
         SecretKeySpec keySpec = new SecretKeySpec(getKey(key), EncryptConstants.TYPE_AES);
         Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
-        cipher.init(mode, keySpec, new IvParameterSpec(getIV(key)));
+        cipher.init(Cipher.DECRYPT_MODE, keySpec, new IvParameterSpec(getIV(key)));
+        return cipher;
+    }
+
+    @Override
+    public Cipher getEncryptCipher(String key) throws Exception {
+        SecretKeySpec keySpec = new SecretKeySpec(getKey(key), EncryptConstants.TYPE_AES);
+        Cipher cipher = Cipher.getInstance(EncryptConstants.AES_GCM_NO_PADDING);
+        cipher.init(Cipher.ENCRYPT_MODE, keySpec, new IvParameterSpec(getIV(key)));
         return cipher;
     }
 
@@ -73,7 +80,7 @@ public class AesEncrypt implements IEncrypt {
      */
     @Override
     public String encrypt(String key, String plainText) throws Exception {
-        Cipher cipher = getCipher(key, Cipher.ENCRYPT_MODE);
+        Cipher cipher = getEncryptCipher(key);
         byte[] encrypted = cipher.doFinal(plainText.getBytes());
         return Base64Util.encode(encrypted);
     }
@@ -86,7 +93,7 @@ public class AesEncrypt implements IEncrypt {
      */
     @Override
     public String decrypt(String key, String cipherText) throws Exception {
-        Cipher cipher = getCipher(key, Cipher.DECRYPT_MODE);
+        Cipher cipher = getDecryptCipher(key);
         byte[] encrypted1 = Base64Util.decode(cipherText);
         byte[] original = cipher.doFinal(encrypted1);
         return new String(original);

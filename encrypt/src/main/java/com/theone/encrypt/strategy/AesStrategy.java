@@ -27,7 +27,11 @@ public class AesStrategy implements IEncryptStrategy {
     @Override
     public Cipher getCipher(int mode) {
         try {
-            return AesEncrypt.getInstance(mContext).getCipher(key, mode);
+            if (mode == Cipher.DECRYPT_MODE){
+                return AesEncrypt.getInstance(mContext).getDecryptCipher(key);
+            }else {
+                return AesEncrypt.getInstance(mContext).getEncryptCipher(key);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

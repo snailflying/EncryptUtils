@@ -44,19 +44,27 @@ public class Des3Encrypt implements IEncrypt {
         return instance;
     }
 
-
     @Override
-    public Cipher getCipher(String key, int mode) throws Exception {
+    public Cipher getDecryptCipher(String key) throws Exception {
         DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
         SecretKey deskey = keyFactory.generateSecret(spec);
 
         Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
         IvParameterSpec ips = new IvParameterSpec(getIV(key));
-        cipher.init(mode, deskey, ips);
-        return cipher;
-    }
+        cipher.init(Cipher.DECRYPT_MODE, deskey, ips);
+        return cipher;    }
 
+    @Override
+    public Cipher getEncryptCipher(String key) throws Exception {
+        DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
+        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("desede");
+        SecretKey deskey = keyFactory.generateSecret(spec);
+
+        Cipher cipher = Cipher.getInstance(DESEDE_CBC_PKCS5_PADDING);
+        IvParameterSpec ips = new IvParameterSpec(getIV(key));
+        cipher.init(Cipher.ENCRYPT_MODE, deskey, ips);
+        return cipher;    }
 
     /**
      * 加密
@@ -66,7 +74,7 @@ public class Des3Encrypt implements IEncrypt {
      * @return 加密文字
      */
     public String encrypt(String key, String plainText) throws Exception {
-        Cipher cipher = getCipher(key, Cipher.ENCRYPT_MODE);
+        Cipher cipher = getEncryptCipher(key);
         byte[] encryptData = cipher.doFinal(plainText.getBytes(encoding));
         return Base64Util.encode(encryptData);
     }
@@ -78,7 +86,7 @@ public class Des3Encrypt implements IEncrypt {
      * @return 解密文字
      */
     public String decrypt(String key, String encryptText) throws Exception {
-        Cipher cipher = getCipher(key, Cipher.DECRYPT_MODE);
+        Cipher cipher = getDecryptCipher(key);
         byte[] decryptData = cipher.doFinal(Base64Util.decode(encryptText));
         return new String(decryptData, encoding);
     }

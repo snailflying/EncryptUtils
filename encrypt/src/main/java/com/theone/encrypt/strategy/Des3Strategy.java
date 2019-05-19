@@ -29,7 +29,11 @@ public class Des3Strategy implements IEncryptStrategy {
     @Override
     public Cipher getCipher(int mode) {
         try {
-            return Des3Encrypt.getInstance(mContext).getCipher(key, mode);
+            if (mode == Cipher.DECRYPT_MODE){
+                return Des3Encrypt.getInstance(mContext).getDecryptCipher(key);
+            }else {
+                return Des3Encrypt.getInstance(mContext).getEncryptCipher(key);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
