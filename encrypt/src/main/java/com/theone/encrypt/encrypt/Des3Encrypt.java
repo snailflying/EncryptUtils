@@ -14,7 +14,7 @@ import javax.crypto.spec.IvParameterSpec;
  * @Author zhiqiang
  * @Email liuzhiqiang@moretickets.com
  * @Date 2019-05-15
- * @Description
+ * @Description 注意：Desede不能用SecretKeySpec获取SecretKey
  */
 public class Des3Encrypt implements IEncrypt {
     public static final String DESEDE_CBC_PKCS5_PADDING = "desede/CBC/PKCS5Padding";
@@ -44,6 +44,11 @@ public class Des3Encrypt implements IEncrypt {
         return instance;
     }
 
+    /**
+     * Desede不能用SecretKeySpec获取SecretKey
+     * @param key 密钥
+     * @return 获取加密Cipher
+     */
     @Override
     public Cipher getEncryptCipher(String key) throws Exception {
         DESedeKeySpec spec = new DESedeKeySpec(getKey(key));
