@@ -14,10 +14,12 @@ import javax.crypto.spec.IvParameterSpec;
  * @Author zhiqiang
  * @Email liuzhiqiang@moretickets.com
  * @Date 2019-05-15
- * @Description 注意：Desede不能用SecretKeySpec获取SecretKey
+ * @Description
+ * 参考{https://developer.android.com/reference/javax/crypto/SecretKeyFactory}
+ * 注意：Desede不能用SecretKeySpec获取SecretKey
  */
 public class Des3Encrypt implements IEncrypt {
-    public static final String DESEDE_CBC_PKCS5_PADDING = "desede/CBC/PKCS5Padding";
+    private static final String DESEDE_CBC_PKCS5_PADDING = "desede/CBC/PKCS5Padding";
     private static String encoding = "utf-8";
     private static Des3Encrypt instance;
     private Context context;
