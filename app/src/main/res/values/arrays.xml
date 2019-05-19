@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="encrypt">
+        <item>RSA</item>
         <item>AES+RSA</item>
         <item>AES</item>
         <item>DES3</item>

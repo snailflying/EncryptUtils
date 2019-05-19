@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.AdapterView
 import com.theone.encrypt.Encrypt
+import com.theone.encrypt.strategy.AesRsaStrategy
 import com.theone.encrypt.strategy.AesStrategy
 import com.theone.encrypt.strategy.Des3Strategy
 import com.theone.encrypt.strategy.IEncryptStrategy
@@ -27,25 +28,26 @@ class MainActivity : AppCompatActivity() {
         iEncryptStrategy = Encrypt.with(this)
         val encode = iEncryptStrategy.encrypt(origin)
         val decode = iEncryptStrategy.decrypt(encode)
-        encrypt.text = getString(R.string.encode_tip)+encode
-        decrypt.text = getString(R.string.decode_tip)+decode
+        encrypt.text = getString(R.string.encode_tip) + encode
+        decrypt.text = getString(R.string.decode_tip) + decode
 
-        spinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                when (position){
-                    0-> iEncryptStrategy = Encrypt.with(this@MainActivity)
-                    1-> iEncryptStrategy = Encrypt.with(AesStrategy(this@MainActivity))
-                    2-> iEncryptStrategy = Encrypt.with(Des3Strategy(this@MainActivity))
+                when (position) {
+                    0 -> iEncryptStrategy = Encrypt.with(this@MainActivity)
+                    1 -> iEncryptStrategy = Encrypt.with(AesRsaStrategy(this@MainActivity))
+                    2 -> iEncryptStrategy = Encrypt.with(AesStrategy(this@MainActivity))
+                    3 -> iEncryptStrategy = Encrypt.with(Des3Strategy(this@MainActivity))
                 }
 
                 val encode = iEncryptStrategy.encrypt(origin)
                 val decode = iEncryptStrategy.decrypt(encode)
-                encrypt.text = resources.getStringArray(R.array.encrypt)[position]+"加密:"+encode
-                decrypt.text = resources.getStringArray(R.array.encrypt)[position]+"解密:"+decode
+                encrypt.text = resources.getStringArray(R.array.encrypt)[position] + "加密:" + encode
+                decrypt.text = resources.getStringArray(R.array.encrypt)[position] + "解密:" + decode
             }
 
         }

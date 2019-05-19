@@ -53,7 +53,7 @@ public class AesEncrypt implements IEncrypt {
     private byte[] getIV(String key) {
         String serialNo = GenKey.getAndroidId(context);
         //加密随机字符串生成AES key
-        return GenKey.SHA(serialNo + key + "#$Zhi$D%FQiang").substring(0, 16).getBytes();
+        return GenKey.SHA(serialNo + key + "#$Zhi$D%FQiang").substring(0, 12).getBytes();
     }
 
     @Override
