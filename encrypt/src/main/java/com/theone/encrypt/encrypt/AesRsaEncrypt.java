@@ -243,9 +243,6 @@ public class AesRsaEncrypt implements IEncrypt {
     private boolean containsAlias(String alias) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             try {
-                KeyStore keyStore =
-                        KeyStore.getInstance(EncryptConstants.ANDROID_KEY_STORE);
-                keyStore.load(null);
                 return keyStore.containsAlias(alias);
             } catch (Exception e) {
                 return false;
